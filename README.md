@@ -13,16 +13,19 @@ drive.mount('/content/drive')
 !pip install -q kaggle   
 uploaded = files.upload()   
 ```
-
+```
 !cp /content/kaggle.json ~/.kaggle/kaggle.json
-
+```
+```
 !kaggle datasets download -d tamirpuzanov/road-signs-classification
-
+```
+```
 %ls 
 !unzip \*.zip && rm *.zip
-
+```
+```
 !nvidia-smi
-
+```
 import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf 
