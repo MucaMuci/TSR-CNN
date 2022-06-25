@@ -42,9 +42,11 @@ from keras.layers import Conv2D, MaxPool2D, Dense, Flatten, Dropout
 from tensorflow.keras.models import load_model
 ```
 
+```python
 train_path = '/content/drive/MyDrive/datasets/dataset/train/'
 test_path = '/content/drive/MyDrive/datasets/dataset/test/'
-
+```
+```python
 img = load_img(train_path + "Autocesta/037b8446-0386-48f4-a3a1-05e4d8ea27f9.png", target_size=(100,100))
 plt.imshow(img)
 plt.axis("off")
@@ -52,21 +54,25 @@ plt.show()
 #Printing the shape of the image array 
 x = img_to_array(img)
 print(x.shape)
-
+```
+```python
 batch_size = 50
+
 train_generator = ImageDataGenerator().flow_from_directory(
 directory = train_path,
 target_size= x.shape[:2],
 batch_size = batch_size,
 color_mode= "rgb",
 class_mode= "categorical")
+
 test_generator = ImageDataGenerator().flow_from_directory(
 directory = test_path,
 target_size= x.shape[:2],
 batch_size = batch_size,
 color_mode= "rgb",
 class_mode= "categorical")
-
+```
+```python
 model = Sequential()
 model.add(Conv2D(filters=32, kernel_size=(5,5), activation='relu', input_shape=(100,100,3)))
 model.add(Conv2D(filters=32, kernel_size=(5,5), activation='relu'))
@@ -80,11 +86,14 @@ model.add(Flatten())
 model.add(Dense(256, activation='relu'))
 model.add(Dropout(rate=0.5))
 model.add(Dense(136, activation='softmax'))
-
+```
+```python
 model.compile(loss = "categorical_crossentropy", optimizer = "rmsprop", metrics = ["accuracy"])
-
+```
+```python
 epochs = 50
-
+```
+```python
 with tf.device('/gpu:0'):
   model.fit(
   x = train_generator,
@@ -92,25 +101,36 @@ with tf.device('/gpu:0'):
   epochs=epochs,
   validation_data = test_generator,
   validation_steps = 800 // batch_size)
-  
+```
+```python  
 model.save('drive/MyDrive/datasets/model_fuzzy.h5')
+```
+```python
 model.save('drive/MyDrive/datasets/model_fuzzy2.h5')
+```
+```python
 model.save('drive/MyDrive/datasets/model_TPU.h5')
+```
+```python
 model.save('drive/MyDrive/datasets/model_GTX960.h5')
-  
+```
+```python  
 model1 = load_model('drive/MyDrive/datasets/model_fuzzy.h5')
 model2 = load_model('drive/MyDrive/datasets/model_fuzzy2.h5')
-  
+```
+```python
 test_img = load_img("/content/drive/MyDrive/datasets/right-turn-prohibited-road-sign-uk-2CBGK16.jpg", target_size=(100,100))
 test_img_array = img_to_array(test_img)
 test_img_expanded = np.expand_dims(test_img_array, axis = 0)
-
+```
+```python
 prediction = model2.predict(test_img_expanded)
 prediction = prediction.tolist()
 prediction = prediction[0]
 index = prediction.index(max(prediction))
 print(index)
-
+```
+```python
 labels = ["Autocesta", "Benzinska postaja", "Biciklisti na cesti", "Biciklistička staza", "Bolnica", "Brza cesta", "Brzina koja se preporucuje-40", "Brzina koja se preporucuje-50", 
           "Brzina koja se preporucuje-60", "Brzina koja se preporucuje-70", "Brzina koja se preporucuje-80", "Cesta s prednošću prolaska", "Cesta s jednosmjernim prometom 1",
           "Cesta s jednosmjernim prometom 2", "Cesta s jednosmjernim prometom 3", "Divljac na cesti", "Djeca na cesti", "Domace zivotinje na cesti", "Dopusteni smjerovi lijevo i desno",
@@ -134,7 +154,8 @@ labels = ["Autocesta", "Benzinska postaja", "Biciklisti na cesti", "Biciklistič
           "Zabrana zaustavljanja i parkiranja", "Zatvaranje prometne trake", "Zavoj udesno", "Zavoj ulijevo", "Zavrsetak autoceste", "Zavrsetak biciklisticke staze", "Zavrsetak brze ceste",
           "Zavrsetak ceste s prednoscu prolaska", "Zavrsetak ceste s jednosmjernim prometom", "Zavrsetak pjesacke i biciklisticke staze", "Zavrsetak podrucja smirenog prometa",
           "Zeljeznicka pruga", "Zona u kojoj je ogranicena brzine-20", "Zona u kojoj je ogranicena brzina-30", "Zona u kojoj je ogranicena brzina-40", "Zona u kojoj je ogranicena brzina-50"]
-          
+```
+```python          
 img = load_img("/content/drive/MyDrive/datasets/right-turn-prohibited-road-sign-uk-2CBGK16.jpg", target_size=(100,100))
 plt.imshow(img)
 plt.axis("off")
@@ -142,10 +163,14 @@ plt.show()
 #Printing the shape of the image array 
 x = img_to_array(img)
 print(x.shape)
-
+```
+```python
 predicted_image = labels[index]
 print(predicted_image)
-
+```
+```python
 model2.summary()
-
+```
+```python
 print(tf.__version__)
+```
