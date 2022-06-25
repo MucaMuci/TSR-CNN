@@ -1,15 +1,18 @@
 # TSR-CNN
 Traffic Sign Recognition Convolutional Neural Network
 ## Process
-
-from google.colab import drive
-from google.colab import files
-
-from google.colab import drive
-drive.mount('/content/drive')
-
-!pip install -q kaggle
-uploaded = files.upload()
+```
+from google.colab import drive  
+from google.colab import files  
+```
+```
+from google.colab import drive   
+drive.mount('/content/drive')   
+```
+```
+!pip install -q kaggle   
+uploaded = files.upload()   
+```
 
 !cp /content/kaggle.json ~/.kaggle/kaggle.json
 
