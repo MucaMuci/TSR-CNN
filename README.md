@@ -26,6 +26,7 @@ uploaded = files.upload()
 ```
 !nvidia-smi
 ```
+```python
 import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf 
@@ -39,6 +40,7 @@ from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
 from keras.models import Sequential 
 from keras.layers import Conv2D, MaxPool2D, Dense, Flatten, Dropout
 from tensorflow.keras.models import load_model
+```
 
 train_path = '/content/drive/MyDrive/datasets/dataset/train/'
 test_path = '/content/drive/MyDrive/datasets/dataset/test/'
