@@ -1,31 +1,38 @@
 # TSR-CNN
 Traffic Sign Recognition Convolutional Neural Network
 ## Process
+### import google colab libraries
 ```
 from google.colab import drive  
 from google.colab import files  
 ```
+### Mount the drive
 ```
-from google.colab import drive   
 drive.mount('/content/drive')   
 ```
+### Download kaggle JSON file
 ```
 !pip install -q kaggle   
 uploaded = files.upload()   
 ```
+### Copy kaggle.json file from /content/ to ~/.kaggle
 ```
 !cp /content/kaggle.json ~/.kaggle/kaggle.json
 ```
+### Download dataset folder
 ```
 !kaggle datasets download -d tamirpuzanov/road-signs-classification
 ```
+### Unzip dataset folder
 ```
 %ls 
 !unzip \*.zip && rm *.zip
 ```
+### Check Colab GPU specs 
 ```
 !nvidia-smi
 ```
+### Import all needed libraries
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -41,11 +48,12 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPool2D, Dense, Flatten, Dropout
 from tensorflow.keras.models import load_model
 ```
-
+### Set train and test(validation) paths 
 ```python
 train_path = '/content/drive/MyDrive/datasets/dataset/train/'
 test_path = '/content/drive/MyDrive/datasets/dataset/test/'
 ```
+### Show example of one picture from dataset
 ```python
 img = load_img(train_path + "Autocesta/037b8446-0386-48f4-a3a1-05e4d8ea27f9.png", target_size=(100,100))
 plt.imshow(img)
@@ -55,6 +63,7 @@ plt.show()
 x = img_to_array(img)
 print(x.shape)
 ```
+### Set CNN parameters
 ```python
 batch_size = 50
 
@@ -72,6 +81,7 @@ batch_size = batch_size,
 color_mode= "rgb",
 class_mode= "categorical")
 ```
+### Defining model
 ```python
 model = Sequential()
 model.add(Conv2D(filters=32, kernel_size=(5,5), activation='relu', input_shape=(100,100,3)))
@@ -87,14 +97,17 @@ model.add(Dense(256, activation='relu'))
 model.add(Dropout(rate=0.5))
 model.add(Dense(136, activation='softmax'))
 ```
+### Compiling model
 ```python
 model.compile(loss = "categorical_crossentropy", optimizer = "rmsprop", metrics = ["accuracy"])
 ```
+### Setting number of epochs
 ```python
 epochs = 50
 ```
+### Start CNN training
 ```python
-with tf.device('/gpu:0'):
+with tf.device('/gpu:0'): # train on my GPU; to train on Colab GPU remove this line
   model.fit(
   x = train_generator,
   steps_per_epoch = 1600 // batch_size,
@@ -102,27 +115,34 @@ with tf.device('/gpu:0'):
   validation_data = test_generator,
   validation_steps = 800 // batch_size)
 ```
+### Save model with Google Colab GPU (attempt 1)
 ```python  
 model.save('drive/MyDrive/datasets/model_fuzzy.h5')
 ```
+### Save model with Google Colab GPU (attempt 2)
 ```python
 model.save('drive/MyDrive/datasets/model_fuzzy2.h5')
 ```
+### Save model with Google Colab TPU 
 ```python
 model.save('drive/MyDrive/datasets/model_TPU.h5')
 ```
+### Save model with my GPU
 ```python
 model.save('drive/MyDrive/datasets/model_GTX960.h5')
 ```
+### Load models
 ```python  
 model1 = load_model('drive/MyDrive/datasets/model_fuzzy.h5')
 model2 = load_model('drive/MyDrive/datasets/model_fuzzy2.h5')
 ```
+### Preparing image for testing
 ```python
 test_img = load_img("/content/drive/MyDrive/datasets/right-turn-prohibited-road-sign-uk-2CBGK16.jpg", target_size=(100,100))
 test_img_array = img_to_array(test_img)
 test_img_expanded = np.expand_dims(test_img_array, axis = 0)
 ```
+### Testing
 ```python
 prediction = model2.predict(test_img_expanded)
 prediction = prediction.tolist()
@@ -130,6 +150,7 @@ prediction = prediction[0]
 index = prediction.index(max(prediction))
 print(index)
 ```
+### Initialization of our class label array
 ```python
 labels = ["Autocesta", "Benzinska postaja", "Biciklisti na cesti", "Biciklistička staza", "Bolnica", "Brza cesta", "Brzina koja se preporucuje-40", "Brzina koja se preporucuje-50", 
           "Brzina koja se preporucuje-60", "Brzina koja se preporucuje-70", "Brzina koja se preporucuje-80", "Cesta s prednošću prolaska", "Cesta s jednosmjernim prometom 1",
@@ -155,6 +176,7 @@ labels = ["Autocesta", "Benzinska postaja", "Biciklisti na cesti", "Biciklistič
           "Zavrsetak ceste s prednoscu prolaska", "Zavrsetak ceste s jednosmjernim prometom", "Zavrsetak pjesacke i biciklisticke staze", "Zavrsetak podrucja smirenog prometa",
           "Zeljeznicka pruga", "Zona u kojoj je ogranicena brzine-20", "Zona u kojoj je ogranicena brzina-30", "Zona u kojoj je ogranicena brzina-40", "Zona u kojoj je ogranicena brzina-50"]
 ```
+### Show testing image
 ```python          
 img = load_img("/content/drive/MyDrive/datasets/right-turn-prohibited-road-sign-uk-2CBGK16.jpg", target_size=(100,100))
 plt.imshow(img)
@@ -164,13 +186,12 @@ plt.show()
 x = img_to_array(img)
 print(x.shape)
 ```
+### Show prediction
 ```python
 predicted_image = labels[index]
 print(predicted_image)
 ```
+### Model summary (layers)
 ```python
 model2.summary()
-```
-```python
-print(tf.__version__)
 ```
